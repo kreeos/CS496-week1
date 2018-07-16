@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
                     Intent i = new Intent(getApplicationContext(), GalleryActivity.class);
 
-                    i.putExtra("chosen_pic2", filePath);
+                    i.putExtra("chosen_pic", filePath);
 
                     startActivity(i);
                 }
