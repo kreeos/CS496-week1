@@ -56,12 +56,13 @@ public class GalleryActivity extends AppCompatActivity {
                 Bitmap cropped = cropImageView.getCroppedImage();
                 Log.d("Tag",cropped.getWidth()+"   "+cropped.getHeight());
 
-//                Bitmap std_id_cropped2 = Bitmap.createBitmap(cropped,0,0,2460,1560);
-//                Bitmap std_id_cropped = Bitmap.createScaledBitmap(cropped,2460,1560,true);
-//                Bitmap std_name = Bitmap.createBitmap(std_id_cropped,920,240,420,130);
+                Drawable test = getResources().getDrawable(R.drawable.test);
+                Bitmap bitmap2 = ((BitmapDrawable)test).getBitmap();
+
+
                 Intent intent = new Intent(getApplicationContext(),SwapActivity.class);
                 ByteArrayOutputStream bs = new ByteArrayOutputStream();
-                cropped.compress(Bitmap.CompressFormat.PNG, 100, bs);
+                bitmap2.compress(Bitmap.CompressFormat.PNG, 50, bs);
                 byte[] byteArray = bs.toByteArray();
                 String encoded = Base64.encodeToString(byteArray, 0);
                 intent.putExtra("byteArray",encoded);
