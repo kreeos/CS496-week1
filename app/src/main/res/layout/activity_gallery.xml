@@ -5,25 +5,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
+
     <com.theartofdev.edmodo.cropper.CropImageView xmlns:custom="http://schemas.android.com/apk/res-auto"
         android:id="@+id/cropImageView"
         android:layout_width="match_parent"
         android:layout_height="889dp"
-        android:layout_weight="1" />
+        android:layout_weight="1" >
+
+        <!--<ImageView-->
+            <!--android:id="@+id/imageView"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--app:srcCompat="@drawable/camera" />-->
+        <ImageView
+            android:id="@+id/cropped_image"
+            android:layout_width="394dp"
+            android:layout_height="432dp"
+            app:srcCompat="@drawable/camera" />
+
+    </com.theartofdev.edmodo.cropper.CropImageView>
+
 
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">
-
-        <!--<ImageView-->
-            <!--android:id="@+id/gallery_preview"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="209dp"-->
-            <!--android:layout_weight="1">-->
-
-        <!--</ImageView>-->
 
         <Button
             android:id="@+id/randombt"

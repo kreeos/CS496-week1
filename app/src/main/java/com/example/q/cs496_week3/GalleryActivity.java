@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,14 +17,14 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.support.design.widget.FloatingActionButton;
-
 import com.theartofdev.edmodo.cropper.CropImageView;
-
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 public class GalleryActivity extends AppCompatActivity {
     int angle = 90;
+    public static final int FEED_DIMENSION = 32;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,30 +34,18 @@ public class GalleryActivity extends AppCompatActivity {
         FloatingActionButton rotate_left = findViewById(R.id.rotate_left);
         FloatingActionButton rotate_right = findViewById(R.id.rotate_right);
 
-//        final ImageView preview = (ImageView) findViewById(R.id.gallery_preview);
+        final ImageView cropped_image = findViewById(R.id.cropped_image);
+        cropped_image.setAlpha(0);
 
         Intent i = getIntent();
-//        Bitmap yourSelectedImage = (Bitmap) i.getParcelableExtra("chosen_pic");
-//        String filePath2 = i.getStringExtra("chosen_pic");
         String filePath = i.getStringExtra("chosen_pic");
         final Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
-//        Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath2);
 
 
         rotate_left.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.rotate_left));
         rotate_right.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.rotate_right));
 
 
-
-//        byte[] decodedString = Base64.decode(pic.getPhoto(),Base64.NO_WRAP);
-//        InputStream inputStream  = new ByteArrayInputStream(decodedString);
-//        Bitmap bitmap  = BitmapFactory.decodeStream(inputStream);
-//        if(yourSelectedImage!=null){
-//            preview.setImageBitmap(yourSelectedImage);
-//        }
-//        if(yourSelectedImage2!=null){
-//            preview.setImageBitmap(RotateBitmap(yourSelectedImage,90));
-//        }
 
         final CropImageView cropImageView = findViewById(R.id.cropImageView);
         RotateBitmap(yourSelectedImage,angle,cropImageView);
@@ -64,7 +54,18 @@ public class GalleryActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Bitmap cropped = cropImageView.getCroppedImage();
-//                preview.setImageBitmap(cropped);
+                Log.d("Tag",cropped.getWidth()+"   "+cropped.getHeight());
+
+//                Bitmap std_id_cropped2 = Bitmap.createBitmap(cropped,0,0,2460,1560);
+//                Bitmap std_id_cropped = Bitmap.createScaledBitmap(cropped,2460,1560,true);
+//                Bitmap std_name = Bitmap.createBitmap(std_id_cropped,920,240,420,130);
+                Intent intent = new Intent(getApplicationContext(),SwapActivity.class);
+                ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                cropped.compress(Bitmap.CompressFormat.PNG, 100, bs);
+                byte[] byteArray = bs.toByteArray();
+                String encoded = Base64.encodeToString(byteArray, 0);
+                intent.putExtra("byteArray",encoded);
+                startActivity(intent);
             }
         });
 
@@ -94,4 +95,42 @@ public class GalleryActivity extends AppCompatActivity {
         cropImageView.setImageBitmap( Bitmap.createBitmap(source, 0, 0, width, height, matrix, true));
 
     }
+
+
+    public float[] getPixelData(Bitmap bitmap) {
+//        Drawable test = this.getResources().getDrawable(R.drawable.test_full6);
+//        Bitmap bitmap2 = ((BitmapDrawable)test).getBitmap();
+//        int width2 = bitmap2.getWidth();
+//        int height2 = bitmap2.getHeight();
+//        Bitmap test3 = Bitmap.createBitmap(bitmap2,0,0,(width2/3)+7,height2);
+
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, FEED_DIMENSION,
+                FEED_DIMENSION, false);
+
+        int width = FEED_DIMENSION;
+        int height = FEED_DIMENSION;
+
+        int[] pixels = new int[width * height];
+        resizedBitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+
+        float[] returnPixels = new float[pixels.length];
+
+        // Here we want to convert each pixel to a floating point number between 0.0 and 1.0 with
+        // 1.0 being white and 0.0 being black.
+        for (int i = 0; i < pixels.length; ++i) {
+            int pix = pixels[i];
+            int b = pix & 0xff;
+            if(b>150){
+                returnPixels[i] = (float) 1;
+            }
+            else{
+                returnPixels[i] = (float) 0;
+            }
+
+        }
+        return returnPixels;
+    }
+
+
+
 }
