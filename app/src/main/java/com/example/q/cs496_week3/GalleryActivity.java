@@ -7,7 +7,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -20,11 +24,19 @@ import android.support.design.widget.FloatingActionButton;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static com.example.q.cs496_week3.CameraActivity.REQUEST_IMAGE_CAPTURE;
+import static com.example.q.cs496_week3.CameraActivity.REQUEST_TAKE_PHOTO;
 
 public class GalleryActivity extends AppCompatActivity {
     int angle = 90;
     public static final int FEED_DIMENSION = 32;
+    String mCurrentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,18 +67,38 @@ public class GalleryActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Bitmap cropped = cropImageView.getCroppedImage();
                 Log.d("Tag",cropped.getWidth()+"   "+cropped.getHeight());
-
-                Drawable test = getResources().getDrawable(R.drawable.test);
-                Bitmap bitmap2 = ((BitmapDrawable)test).getBitmap();
-
-
-                Intent intent = new Intent(getApplicationContext(),SwapActivity.class);
+//                ByteArrayOutputStream bs = new ByteArrayOutputStream();
+//                cropped.compress(Bitmap.CompressFormat.PNG, 100, bs);
+//                byte[] byteArray = bs.toByteArray();
+//                String encoded = Base64.encodeToString(byteArray, 0);
+//
+//                Intent takePictureIntent = new Intent(getApplicationContext(),MediaStore.);
+//
+//                File photoFile = null;
+//                try {
+//                    photoFile = createImageFile();
+//                } catch (IOException ex) {
+                    // Error occurred while creating the File
+                Intent i = new Intent(getApplicationContext(), SwapActivity.class);
                 ByteArrayOutputStream bs = new ByteArrayOutputStream();
-                bitmap2.compress(Bitmap.CompressFormat.PNG, 50, bs);
-                byte[] byteArray = bs.toByteArray();
-                String encoded = Base64.encodeToString(byteArray, 0);
-                intent.putExtra("byteArray",encoded);
-                startActivity(intent);
+                cropped.compress(Bitmap.CompressFormat.PNG, 50, bs);
+                i.putExtra("byteArray", bs.toByteArray());
+                startActivity(i);
+//                }
+                // Continue only if the File was successfully created
+//                if (photoFile != null) {
+//                    Uri photoURI = FileProvider.getUriForFile(GalleryActivity.this,
+//                            "com.example.android.fileprovider",
+//                            photoFile);
+//                    takePictureIntent.putExtra(encoded, photoURI);
+//                    startActivity(takePictureIntent);
+//                }
+//                ByteArrayOutputStream bs = new ByteArrayOutputStream();
+//                bitmap2.compress(Bitmap.CompressFormat.PNG, 50, bs);
+//                byte[] byteArray = bs.toByteArray();
+//                String encoded = Base64.encodeToString(byteArray, 0);
+//                intent.putExtra("byteArray",encoded);
+//                startActivity(intent);
             }
         });
 
@@ -97,40 +129,6 @@ public class GalleryActivity extends AppCompatActivity {
 
     }
 
-
-    public float[] getPixelData(Bitmap bitmap) {
-//        Drawable test = this.getResources().getDrawable(R.drawable.test_full6);
-//        Bitmap bitmap2 = ((BitmapDrawable)test).getBitmap();
-//        int width2 = bitmap2.getWidth();
-//        int height2 = bitmap2.getHeight();
-//        Bitmap test3 = Bitmap.createBitmap(bitmap2,0,0,(width2/3)+7,height2);
-
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, FEED_DIMENSION,
-                FEED_DIMENSION, false);
-
-        int width = FEED_DIMENSION;
-        int height = FEED_DIMENSION;
-
-        int[] pixels = new int[width * height];
-        resizedBitmap.getPixels(pixels, 0, width, 0, 0, width, height);
-
-        float[] returnPixels = new float[pixels.length];
-
-        // Here we want to convert each pixel to a floating point number between 0.0 and 1.0 with
-        // 1.0 being white and 0.0 being black.
-        for (int i = 0; i < pixels.length; ++i) {
-            int pix = pixels[i];
-            int b = pix & 0xff;
-            if(b>150){
-                returnPixels[i] = (float) 1;
-            }
-            else{
-                returnPixels[i] = (float) 0;
-            }
-
-        }
-        return returnPixels;
-    }
 
 
 

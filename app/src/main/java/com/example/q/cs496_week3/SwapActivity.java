@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +28,7 @@ public class SwapActivity extends AppCompatActivity{
     Bitmap[] bitmaps = new Bitmap[20];
     private HangulClassifier classifier;
     String[] currentTopLabels;
-    private TextView resultText;
+    TextView resultText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,47 +37,53 @@ public class SwapActivity extends AppCompatActivity{
 
         final ImageView imageView = findViewById(R.id.student_id);
 
-        Intent i = new Intent();
-        String b = i.getStringExtra("byteArray");
-        byte[] bImage = Base64.decode(b, 0);
-        ByteArrayInputStream bais = new ByteArrayInputStream(bImage);
-        Bitmap bm = BitmapFactory.decodeStream(bais);
-        imageView.setImageBitmap(bm);
+        Drawable test = getResources().getDrawable(R.drawable.test4);
+        resultText = findViewById(R.id.resultText);
+        final Bitmap bitmap2 = ((BitmapDrawable)test).getBitmap();
+
+        if(getIntent().hasExtra("byteArray")) {
+            Bitmap b = BitmapFactory.decodeByteArray(
+                    getIntent().getByteArrayExtra("byteArray"),0,getIntent().getByteArrayExtra("byteArray").length);
+            imageView.setImageBitmap(b);
+        }
 
 //        Intent i = getIntent();
 //        Bitmap filePath = i.getExtras("name");
-//        imageView.setImageBitmap(filePath);
+//        String filePath = i.getStringExtra("cropped_pic");
+//        final Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
+//        imageView.setImageBitmap(yourSelectedImage);
 
         Button bt_classify = findViewById(R.id.bt_classify);
         bt_classify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
-                Bitmap bmap = drawable.getBitmap();
-                int width2 = bmap.getWidth();
-                int height2 = bmap.getHeight();
-                float new_width = (float) Math.ceil(width2/height2);
+
+                int width2 = bitmap2.getWidth();
+                int height2 = bitmap2.getHeight();
+                float new_width = (float) Math.ceil((float)width2/(float)height2);
                 int num = (int) Math.floor(width2/new_width);
+                Log.d("tag1",width2+"   "+height2+"     "+new_width+"     "+num);
                 for(int j = 0;j<new_width;j++){
                     if(j==0){
-                        bitmaps[j] = Bitmap.createBitmap(bmap,(num*j),0,num+5,height2);
+                        bitmaps[j] = Bitmap.createBitmap(bitmap2,(num*j),0,num+2,height2);
                     }
                     if(j>0 && j<(new_width-1)){
-                        bitmaps[j] = Bitmap.createBitmap(bmap,(num*j)-5,0,num+10,height2);
+                        bitmaps[j] = Bitmap.createBitmap(bitmap2,(num*j)-2,0,num+4,height2);
                     }
                     if(j==(new_width-1)){
-                        bitmaps[j] = Bitmap.createBitmap(bmap,(num*j)-5,0,num,height2);
+                        bitmaps[j] = Bitmap.createBitmap(bitmap2,(num*j)-2,0,num,height2);
                     }
                 }
                 for(int i =0;i<new_width;i++){
+                    Log.d("Tag", String.valueOf(bitmaps[i]));
                     classify(getPixelData(bitmaps[i]));
                 }
-
             }
         });
+        loadModel();
     }
 
-    void classify(float pixels[]) {
+    void classify(float[] pixels) {
         currentTopLabels = classifier.classify(pixels);
         resultText.append(currentTopLabels[0]);
     }
@@ -104,15 +111,30 @@ public class SwapActivity extends AppCompatActivity{
         for (int i = 0; i < pixels.length; ++i) {
             int pix = pixels[i];
             int b = pix & 0xff;
-            if(b>150){
-                returnPixels[i] = (float) 1;
-            }
-            else{
-                returnPixels[i] = (float) 0;
-            }
+//            if(b>150){
+                returnPixels[i] = (float) (b/255);
+//            }
+//            else{
+//                returnPixels[i] = (float) 0;
+//            }
 
         }
         return returnPixels;
+    }
+
+    private void loadModel() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    classifier = HangulClassifier.create(getAssets(),
+                            MODEL_FILE, LABEL_FILE, 32,
+                            "input", "keep_prob", "output");
+                } catch (final Exception e) {
+                    throw new RuntimeException("Error loading pre-trained model.", e);
+                }
+            }
+        }).start();
     }
 
 }
