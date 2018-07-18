@@ -3,6 +3,7 @@ package com.example.q.cs496_week3;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Bundle;
@@ -37,6 +38,8 @@ public class GalleryActivity2 extends AppCompatActivity {
         Button button = findViewById(R.id.randombt2);
         FloatingActionButton rotate_left = findViewById(R.id.rotate_left2);
         FloatingActionButton rotate_right = findViewById(R.id.rotate_right2);
+        FloatingActionButton rotate_left_ninty = findViewById(R.id.rotate_left_ninty2);
+        FloatingActionButton rotate_right_ninty = findViewById(R.id.rotate_right_ninty2);
 
         final ImageView cropped_image = findViewById(R.id.cropped_image2);
         cropped_image.setAlpha(0);
@@ -48,6 +51,8 @@ public class GalleryActivity2 extends AppCompatActivity {
 
         rotate_left.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.rotate_left));
         rotate_right.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.rotate_right));
+        rotate_left_ninty.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.rotate_left_ninty));
+        rotate_right_ninty.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.rotate_right_ninty));
 
         resultText = findViewById(R.id.textView);
         numText = findViewById(R.id.textView2);
@@ -60,9 +65,18 @@ public class GalleryActivity2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d("tag1", numText.getText().toString());
-                int char_num = Integer.parseInt(numText.getText().toString());
+                int char_num;
+                try {
+                    Integer.parseInt(numText.getText().toString());
+                }catch(Exception e){
+                    return;
+                }
+                char_num = Integer.parseInt(numText.getText().toString());
+                Log.d("???", char_num+"");
                 Bitmap cropped = cropImageView.getCroppedImage();
                 cropped = RemoveNoise(cropped);
+                cropped = RemovePadding(cropped);
+
                 int width2 = cropped.getWidth();
                 int height2 = cropped.getHeight();
                 float new_width = char_num;
@@ -75,14 +89,19 @@ public class GalleryActivity2 extends AppCompatActivity {
                 for(int j = 0;j<new_width;j++){
                     if(j==0){
                         bitmaps[j] = Bitmap.createBitmap(cropped,(num*j),0,num+padding,height2);
+                        //pad(bitmaps[j], 2, 2);
                     }
                     if(j>0 && j<(new_width-1)){
                         bitmaps[j] = Bitmap.createBitmap(cropped,(num*j)-padding,0,num+padding,height2);
+                        //pad(bitmaps[j], 2, 2);
                     }
                     if(j==(new_width-1)){
                         bitmaps[j] = Bitmap.createBitmap(cropped,(num*j)-padding,0,num,height2);
+                        //pad(bitmaps[j], 2, 2);
                     }
                 }
+                resultText.setText("");
+                numText.setText("");
                 for(int i =0;i<new_width;i++){
                     Log.d("Tag", String.valueOf(bitmaps[i]));
                     classify(getPixelData(bitmaps[i]));
@@ -96,11 +115,24 @@ public class GalleryActivity2 extends AppCompatActivity {
                 cropImageView.rotateImage(-2);
             }
         });
+        rotate_left_ninty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cropImageView.rotateImage(-90);
+            }
+        });
 
         rotate_right.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 cropImageView.rotateImage(2);
+            }
+        });
+
+        rotate_right_ninty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cropImageView.rotateImage(90);
             }
         });
 
@@ -204,6 +236,101 @@ public class GalleryActivity2 extends AppCompatActivity {
         return bmap;
     }
 
+    public Bitmap RemovePadding(Bitmap bmap){
+        int x,y;
+        for (x=0; x < bmap.getHeight();x++){
+            for (y = 0; y < bmap.getWidth(); y++) {
+                int pixel = bmap.getPixel(y, x);
+                int R = Color.red(pixel);
+                int G = Color.green(pixel);
+                int B = Color.blue(pixel);
+
+                if (R < 100 && G < 100 && B < 100) {
+                    Log.d("tag2", ""+R+" "+G+" "+ B);
+                    break;
+                }
+            }
+            if(y != bmap.getWidth())
+                break;
+        }
+        Log.d("tag2",bmap.getHeight()+"  "+bmap.getWidth()+"");
+        Log.d("tag2", x+"");
+        if(x>10)
+            x=x-10;
+        else
+            x = 0;
+        bmap = Bitmap.createBitmap(bmap,0,x,bmap.getWidth(),bmap.getHeight()-x);
+
+        for (x=bmap.getHeight()-1; x >=0 ;x--){
+            for (y = 0; y < bmap.getWidth(); y++) {
+                int pixel = bmap.getPixel(y, x);
+                int R = Color.red(pixel);
+                int G = Color.green(pixel);
+                int B = Color.blue(pixel);
+                if (R < 100 && G < 100 && B < 100) {
+                    Log.d("tag2", ""+R+" "+G+" "+ B);
+                    break;
+                }
+            }
+            if(y != bmap.getWidth())
+                break;
+        }
+        Log.d("tag2",bmap.getHeight()+"  "+bmap.getWidth()+"");
+        Log.d("tag2", x+"");
+
+        if(x<bmap.getHeight()-10)
+            x=x+10;
+        else
+            x = bmap.getHeight();
+        bmap = Bitmap.createBitmap(bmap,0,0,bmap.getWidth(),x);
+
+        for (x=bmap.getWidth()-1; x >=0 ;x--){
+            for (y = 0; y < bmap.getHeight(); y++) {
+                int pixel = bmap.getPixel(x, y);
+                int R = Color.red(pixel);
+                int G = Color.green(pixel);
+                int B = Color.blue(pixel);
+                if (R < 100 && G < 100 && B < 100)
+                    break;
+            }
+            if(y != bmap.getHeight())
+                break;
+        }
+        Log.d("tag2",bmap.getHeight()+"  "+bmap.getWidth()+"");
+        Log.d("tag2", x+"");
+
+        if(x<bmap.getWidth()-10)
+            x=x+10;
+        else
+            x = bmap.getWidth();
+        bmap = Bitmap.createBitmap(bmap,0,0,x,bmap.getHeight());
+
+        for (x=0; x <bmap.getWidth() ;x++){
+            for (y = 0; y < bmap.getHeight(); y++) {
+                int pixel = bmap.getPixel(x, y);
+                int R = Color.red(pixel);
+                int G = Color.green(pixel);
+                int B = Color.blue(pixel);
+                if (R < 100 && G < 100 && B < 100)
+                    break;
+            }
+            if(y != bmap.getHeight())
+                break;
+        }
+        Log.d("tag2",bmap.getHeight()+"  "+bmap.getWidth()+"");
+        Log.d("tag2", x+"");
+
+        if(x>10)
+            x=x-10;
+        else
+            x = 0;
+
+        bmap = Bitmap.createBitmap(bmap,x,0,bmap.getWidth()-x,bmap.getHeight());
+
+        return bmap;
+    }
+
+
     public static Bitmap grayScaleImage(Bitmap src) {
         // constant factors
         final double GS_RED = 0.299;
@@ -239,6 +366,13 @@ public class GalleryActivity2 extends AppCompatActivity {
 
         // return final image
         return bmOut;
+    }
+    public Bitmap pad(Bitmap Src, int padding_x, int padding_y) {
+        Bitmap outputimage = Bitmap.createBitmap(Src.getWidth() + padding_x,Src.getHeight() + padding_y, Bitmap.Config.ARGB_8888);
+        Canvas can = new Canvas(outputimage);
+        can.drawARGB(150,150,150,150); //This represents White color
+        can.drawBitmap(Src, padding_x, padding_y, null);
+        return outputimage;
     }
 
 }
