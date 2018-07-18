@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,20 +13,22 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 public class IDActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_id);
-        Button bt_myschool = (Button) findViewById(R.id.bt_myschool);
-        Button bt_otherschool = (Button) findViewById(R.id.bt_otherschool);
+        final Button bt_myschool = (Button) findViewById(R.id.bt_myschool);
+        final Button bt_otherschool = (Button) findViewById(R.id.bt_otherschool);
         Button bt_camera = (Button) findViewById(R.id.bt_camera);
         Button bt_gallery = (Button) findViewById(R.id.bt_gallery);
-        Button bt_start_write = (Button) findViewById(R.id.bt_start_write);
-
+        ImageView idmain_logo = (ImageView) findViewById(R.id.idmain_logo);
+        idmain_logo.setMaxWidth((int) ScreenWidth());
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, 0);
@@ -53,6 +56,7 @@ public class IDActivity extends AppCompatActivity{
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if(selectedIndex[0] == 0){
+                                    bt_myschool.setText(items[0]);
                                 }
                                 if(selectedIndex[0] == 1){
                                 }
@@ -96,6 +100,7 @@ public class IDActivity extends AppCompatActivity{
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if(selectedIndex[0] == 0){
+                                    bt_otherschool.setText(items[0]);
                                 }
                                 if(selectedIndex[0] == 1){
                                 }
@@ -132,13 +137,6 @@ public class IDActivity extends AppCompatActivity{
             }
         });
 
-        bt_start_write.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), WriteActivity.class);
-                startActivity(i);
-            }
-        });
 
     }
 
@@ -172,4 +170,12 @@ public class IDActivity extends AppCompatActivity{
         }
 
     }
+
+    //function getting screen width
+    public float ScreenWidth(){
+        Resources resources = getApplicationContext().getResources();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        return dm.widthPixels;
+    }
+
 }

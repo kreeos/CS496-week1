@@ -72,7 +72,7 @@ public class SwapActivity extends AppCompatActivity{
 
 
 
-        Button bt_classify = findViewById(R.id.bt_classify);
+        final Button bt_classify = findViewById(R.id.bt_classify);
         bt_classify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -141,15 +141,14 @@ public class SwapActivity extends AppCompatActivity{
 
                 converted_id.setImageBitmap(mutableBitmap);
                 converted_id.setAlpha(255);
-
+                bt_classify.setEnabled(false);
             }
         });
 
         bt_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(),MainActivity.class);
-                startActivity(i);
+                onBackPressed();
             }
         });
 
@@ -159,7 +158,7 @@ public class SwapActivity extends AppCompatActivity{
                 BitmapDrawable drawable = (BitmapDrawable) converted_id.getDrawable();
                 Bitmap bitmap = drawable.getBitmap();
                 MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "title", "descripton");
-                Toast.makeText(SwapActivity.this, "사진을 저장시켰습니다" , Toast.LENGTH_SHORT).show();
+                Toast.makeText(SwapActivity.this, "사진이 저장되었습니다" , Toast.LENGTH_SHORT).show();
             }
         });
 

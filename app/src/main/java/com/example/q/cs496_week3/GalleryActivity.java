@@ -2,6 +2,7 @@ package com.example.q.cs496_week3;
 
 import android.app.Person;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -15,6 +16,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -76,7 +78,7 @@ public class GalleryActivity extends AppCompatActivity {
                 Bitmap std_id_cropped = Bitmap.createScaledBitmap(cropped,2460,1560,true);
                 Bitmap std_pic = Bitmap.createBitmap(std_id_cropped, 1690,115,610,720);
                 Bitmap std_name = Bitmap.createBitmap(std_id_cropped,920,240,420,130);
-                Bitmap std_num = Bitmap.createBitmap(std_id_cropped,925,660,410,85);
+                Bitmap std_num = Bitmap.createBitmap(std_id_cropped,920,655,406,90);
 
                 Intent i = new Intent(getApplicationContext(), SwapActivity.class);
                 ByteArrayOutputStream bs = new ByteArrayOutputStream();
@@ -134,7 +136,6 @@ public class GalleryActivity extends AppCompatActivity {
         cropImageView.setImageBitmap( Bitmap.createBitmap(source, 0, 0, width, height, matrix, true));
 
     }
-
 
 
 
