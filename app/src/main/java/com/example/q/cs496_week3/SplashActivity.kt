@@ -9,7 +9,7 @@ import android.os.Handler
 class SplashActivity : AppCompatActivity() {
 
     private var mDelayHandler: Handler? = null
-    private val SPLASH_DELAY: Long = 100
+    private val SPLASH_DELAY: Long = 3000
     internal val mRunnable: Runnable = Runnable {
         val intent = Intent(applicationContext, MainActivity::class.java)
         startActivity(intent)
