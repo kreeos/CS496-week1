@@ -30,12 +30,13 @@ class WriteActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_write)
 
         tts = TextToSpeech(this, TextToSpeech.OnInitListener{})
+        tts!!.setSpeechRate(0.8f)
 
         paintView1 = findViewById(R.id.paintView1) as PaintView
         paintView2 = findViewById(R.id.paintView2) as PaintView
         solutionTextView = findViewById(R.id.solutionTextView) as TextView
 
-        solutionTextArray = arrayOf("가나", "소주", "맥주", "닭발", "지각", "", "")
+        solutionTextArray = arrayOf("가나", "소주", "맥주", "닭발", "지각")
 
         val submitBtn = findViewById(R.id.submitBtn) as Button
         submitBtn.setOnClickListener(this)
@@ -64,18 +65,20 @@ class WriteActivity : AppCompatActivity(), View.OnClickListener {
                 speakOut()
             }
             R.id.submitBtn -> {
-                classify()
-                paintView1!!.reset()
-                paintView1!!.invalidate()
-                paintView2!!.reset()
-                paintView2!!.invalidate()
-                Log.d("************", solutionText)
-                Log.d("************", resultText.toString())
-                if (solutionText == resultText!!.text.toString()) {
-                    Toast.makeText(this,"정답입니다!", Toast.LENGTH_SHORT).show()
+                if (solutionText!=null) {
+                    classify()
+                    paintView1!!.reset()
+                    paintView1!!.invalidate()
+                    paintView2!!.reset()
+                    paintView2!!.invalidate()
+                    if (solutionText == resultText!!.text.toString()) {
+                        Toast.makeText(this, "정답입니다!", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "오답입니다!", Toast.LENGTH_SHORT).show()
+                    }
                 }
                 else {
-                    Toast.makeText(this,"오답입니다!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "시작을 눌러주세요!", Toast.LENGTH_SHORT).show()
                 }
             }
             R.id.backBtn -> {

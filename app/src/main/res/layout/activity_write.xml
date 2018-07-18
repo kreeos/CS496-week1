@@ -24,25 +24,23 @@
             android:layout_height="45dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:text="solution"
-            android:textSize="25dp" />
+            android:text="받아쓰기"
+            android:textSize="20dp"
+            android:fontFamily="@font/rice"/>
 
         <com.example.q.cs496_week3.PaintView
             android:id="@+id/paintView1"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:layout_marginBottom="67dp"
-            android:layout_marginStart="13dp" />
+            android:layout_centerVertical="true" />
 
         <com.example.q.cs496_week3.PaintView
             android:id="@+id/paintView2"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_alignParentEnd="true"
-            android:layout_alignTop="@+id/paintView1"
-            android:layout_marginEnd="13dp" />
+            android:layout_centerVertical="true" />
 
 
     </RelativeLayout>
@@ -52,29 +50,31 @@
         android:id="@+id/textLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
 
         <EditText
             android:id="@+id/editText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight=".85"
+            android:backgroundTint="@android:color/darker_gray"
+            android:clickable="false"
+            android:cursorVisible="true"
             android:inputType="textPersonName"
             android:text=""
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:clickable="false"
-            android:cursorVisible="true"
-            android:textCursorDrawable="@drawable/color_cursor"
-            android:backgroundTint="@android:color/darker_gray"
-            android:layout_weight=".85"/>
+            android:textCursorDrawable="@drawable/color_cursor" />
 
 
         <Button
             android:id="@+id/backBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".4"
-            android:text="delete" />
+            android:layout_weight=".2"
+            android:background="#00FFFFFF"
+            android:text="지우기"
+            android:fontFamily="@font/rice"/>
 
     </LinearLayout>
 
@@ -87,8 +87,10 @@
         android:layout_height="40dp"
         android:layout_weight="1"
         android:tag="1"
+        android:background="#00FFFFFF"
         android:layout_gravity="left"
-        android:text="Start"/>
+        android:text="시작"
+        android:fontFamily="@font/rice"/>
     <View
         android:layout_width="50dp"
         android:layout_height="10dp" />
@@ -99,8 +101,10 @@
         android:layout_height="40dp"
         android:layout_weight="1"
         android:tag="2"
+        android:background="#00FFFFFF"
         android:layout_gravity="right"
-        android:text="submit" />
+        android:text="제출"
+        android:fontFamily="@font/rice"/>
 </LinearLayout>
 
 </LinearLayout>
