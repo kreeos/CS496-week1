@@ -62,7 +62,7 @@ class WriteActivity : AppCompatActivity(), View.OnClickListener {
                 solutionText = solutionTextArray!![index]
                 solutionTextView!!.text = solutionText
                 resultText!!.setText("")
-                speakOut()
+                speakOut(solutionText)
             }
             R.id.submitBtn -> {
                 if (solutionText!=null) {
@@ -73,8 +73,10 @@ class WriteActivity : AppCompatActivity(), View.OnClickListener {
                     paintView2!!.invalidate()
                     if (solutionText == resultText!!.text.toString()) {
                         Toast.makeText(this, "정답입니다!", Toast.LENGTH_SHORT).show()
+                        speakOut("맞다")
                     } else {
                         Toast.makeText(this, "오답입니다!", Toast.LENGTH_SHORT).show()
+                        speakOut("아니다")
                     }
                 }
                 else {
@@ -112,8 +114,8 @@ class WriteActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
-    private fun speakOut() {
-        tts!!.speak(solutionText, TextToSpeech.QUEUE_FLUSH, null,"")
+    private fun speakOut(string : String?) {
+        tts!!.speak(string, TextToSpeech.QUEUE_FLUSH, null,"")
     }
 
 
