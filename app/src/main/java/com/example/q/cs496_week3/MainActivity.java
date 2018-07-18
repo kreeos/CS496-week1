@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         Button bt_otherschool = (Button) findViewById(R.id.bt_otherschool);
         Button bt_camera = (Button) findViewById(R.id.bt_camera);
         Button bt_gallery = (Button) findViewById(R.id.bt_gallery);
+        Button bt_start_write = (Button) findViewById(R.id.bt_start_write);
 
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -141,6 +142,15 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(i, ACTIVITY_SELECT_IMAGE);
         }
     });
+
+    bt_start_write.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent i = new Intent(getApplicationContext(), WriteActivity.class);
+            startActivity(i);
+        }
+    });
+
     }
 
 
