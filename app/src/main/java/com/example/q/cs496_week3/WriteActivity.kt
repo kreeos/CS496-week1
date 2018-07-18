@@ -2,9 +2,11 @@ package com.example.q.cs496_week3
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.View
 import android.widget.*
+import org.w3c.dom.Text
 import java.util.Random
 
 class WriteActivity : AppCompatActivity(), View.OnClickListener {
@@ -20,16 +22,20 @@ class WriteActivity : AppCompatActivity(), View.OnClickListener {
     private var solutionTextArray: Array<String>? = null
     private var currentTopLabels1: Array<String>? = null
     private var currentTopLabels2: Array<String>? = null
+    private var tts: TextToSpeech? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_write)
 
+        tts = TextToSpeech(this, TextToSpeech.OnInitListener{})
+
         paintView1 = findViewById(R.id.paintView1) as PaintView
         paintView2 = findViewById(R.id.paintView2) as PaintView
         solutionTextView = findViewById(R.id.solutionTextView) as TextView
 
-        solutionTextArray = arrayOf("가나", "바다", "소주", "맥주", "닭발", "지각", "커피", "희망")
+        solutionTextArray = arrayOf("가나", "소주", "맥주", "닭발", "지각", "희망", "")
 
         val submitBtn = findViewById(R.id.submitBtn) as Button
         submitBtn.setOnClickListener(this)
@@ -54,6 +60,7 @@ class WriteActivity : AppCompatActivity(), View.OnClickListener {
                 var index = random.nextInt(length)
                 solutionText = solutionTextArray!![index]
                 solutionTextView!!.text = solutionText
+                speakOut()
             }
             R.id.submitBtn -> {
                 classify()
@@ -99,6 +106,10 @@ class WriteActivity : AppCompatActivity(), View.OnClickListener {
         currentTopLabels2 = classifier!!.classify(pixels2)
         resultText!!.append(currentTopLabels2!![0])
 
+    }
+
+    private fun speakOut() {
+        tts!!.speak(solutionText, TextToSpeech.QUEUE_FLUSH, null,"")
     }
 
 
