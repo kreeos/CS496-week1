@@ -35,7 +35,7 @@ class WriteActivity : AppCompatActivity(), View.OnClickListener {
         paintView2 = findViewById(R.id.paintView2) as PaintView
         solutionTextView = findViewById(R.id.solutionTextView) as TextView
 
-        solutionTextArray = arrayOf("가나", "소주", "맥주", "닭발", "지각", "희망", "")
+        solutionTextArray = arrayOf("가나", "소주", "맥주", "닭발", "지각", "", "")
 
         val submitBtn = findViewById(R.id.submitBtn) as Button
         submitBtn.setOnClickListener(this)
@@ -60,6 +60,7 @@ class WriteActivity : AppCompatActivity(), View.OnClickListener {
                 var index = random.nextInt(length)
                 solutionText = solutionTextArray!![index]
                 solutionTextView!!.text = solutionText
+                resultText!!.setText("")
                 speakOut()
             }
             R.id.submitBtn -> {
