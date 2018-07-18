@@ -45,6 +45,8 @@ public class GalleryActivity extends AppCompatActivity {
         Button button = findViewById(R.id.randombt);
         FloatingActionButton rotate_left = findViewById(R.id.rotate_left);
         FloatingActionButton rotate_right = findViewById(R.id.rotate_right);
+        FloatingActionButton rotate_left_ninty = findViewById(R.id.rotate_left_ninty);
+        FloatingActionButton rotate_right_ninty = findViewById(R.id.rotate_right_ninty);
 
         final ImageView cropped_image = findViewById(R.id.cropped_image);
         cropped_image.setAlpha(0);
@@ -56,6 +58,8 @@ public class GalleryActivity extends AppCompatActivity {
 
         rotate_left.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.rotate_left));
         rotate_right.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.rotate_right));
+        rotate_left_ninty.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.rotate_left_ninty));
+        rotate_right_ninty.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.rotate_right_ninty));
 
 
 
@@ -67,38 +71,27 @@ public class GalleryActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Bitmap cropped = cropImageView.getCroppedImage();
                 Log.d("Tag",cropped.getWidth()+"   "+cropped.getHeight());
-//                ByteArrayOutputStream bs = new ByteArrayOutputStream();
-//                cropped.compress(Bitmap.CompressFormat.PNG, 100, bs);
-//                byte[] byteArray = bs.toByteArray();
-//                String encoded = Base64.encodeToString(byteArray, 0);
-//
-//                Intent takePictureIntent = new Intent(getApplicationContext(),MediaStore.);
-//
-//                File photoFile = null;
-//                try {
-//                    photoFile = createImageFile();
-//                } catch (IOException ex) {
                     // Error occurred while creating the File
+
+                Bitmap std_id_cropped = Bitmap.createScaledBitmap(cropped,2460,1560,true);
+                Bitmap std_pic = Bitmap.createBitmap(std_id_cropped, 1690,115,610,720);
+                Bitmap std_name = Bitmap.createBitmap(std_id_cropped,920,240,420,130);
+                Bitmap std_num = Bitmap.createBitmap(std_id_cropped,925,660,410,85);
+
                 Intent i = new Intent(getApplicationContext(), SwapActivity.class);
                 ByteArrayOutputStream bs = new ByteArrayOutputStream();
-                cropped.compress(Bitmap.CompressFormat.PNG, 50, bs);
-                i.putExtra("byteArray", bs.toByteArray());
+                std_name.compress(Bitmap.CompressFormat.PNG, 50, bs);
+                i.putExtra("std_name", bs.toByteArray());
+
+                ByteArrayOutputStream bs2 = new ByteArrayOutputStream();
+                std_pic.compress(Bitmap.CompressFormat.PNG, 50, bs2);
+                i.putExtra("std_pic", bs2.toByteArray());
+
+                ByteArrayOutputStream bs3 = new ByteArrayOutputStream();
+                std_num.compress(Bitmap.CompressFormat.PNG, 50, bs3);
+                i.putExtra("std_num", bs3.toByteArray());
+
                 startActivity(i);
-//                }
-                // Continue only if the File was successfully created
-//                if (photoFile != null) {
-//                    Uri photoURI = FileProvider.getUriForFile(GalleryActivity.this,
-//                            "com.example.android.fileprovider",
-//                            photoFile);
-//                    takePictureIntent.putExtra(encoded, photoURI);
-//                    startActivity(takePictureIntent);
-//                }
-//                ByteArrayOutputStream bs = new ByteArrayOutputStream();
-//                bitmap2.compress(Bitmap.CompressFormat.PNG, 50, bs);
-//                byte[] byteArray = bs.toByteArray();
-//                String encoded = Base64.encodeToString(byteArray, 0);
-//                intent.putExtra("byteArray",encoded);
-//                startActivity(intent);
             }
         });
 
@@ -109,6 +102,13 @@ public class GalleryActivity extends AppCompatActivity {
             }
         });
 
+        rotate_left_ninty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cropImageView.rotateImage(-90);
+            }
+        });
+
         rotate_right.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -116,6 +116,12 @@ public class GalleryActivity extends AppCompatActivity {
             }
         });
 
+        rotate_right_ninty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cropImageView.rotateImage(90);
+            }
+        });
     }
 
 
